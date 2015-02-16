@@ -68,13 +68,16 @@ function bootstrap_cmssw() {
   if echo $2 | grep -q patch; then
     echo "Installing patch release $2"
     apt-get -y install cms+cmssw-patch+$2
-    
-    
   else
     echo "Installing release $2"
     apt-get -y install cms+cmssw+$2
   fi
   apt-get clean
 }
+
+if [ "$1" = "-a" ]; then
+  export SCRAM_ARCH="$2"
+  shift 2
+fi
 
 bootstrap_cmssw "$@"

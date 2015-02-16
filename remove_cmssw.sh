@@ -66,15 +66,18 @@ function bootstrap_cmssw() {
   source "$VO_CMS_SW_DIR"/"$SCRAM_ARCH"/external/apt/*/etc/profile.d/init.sh
   apt-get update
   if echo $2 | grep -q patch; then
-    echo "Installing patch release $2"
+    echo "Removing patch release $2"
     apt-get -y -D remove cms+cmssw-patch+$2
-    
-    
   else
-    echo "Installing release $2"
+    echo "Removing release $2"
     apt-get -y -D remove cms+cmssw+$2
   fi
   apt-get clean
 }
+
+if [ "$1" = "-a" ]; then
+  export SCRAM_ARCH="$2"
+  shift 2
+fi
 
 bootstrap_cmssw "$@"
