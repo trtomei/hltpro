@@ -100,17 +100,17 @@ class OfflineConverter:
 def help():
     sys.stdout.write("""Usage: %s OPTIONS
 
-        --v1|--v2                   (ConfDB version [default: v2])
+        --v1|--v2                   (specify the ConfDB version [default: v2])
 
         For v1:
-        --hltdev|--orcoff|--daq     (target db [default: daq])
+        --hltdev|--orcoff|--daq     (specify the target db [default: daq])
 
         For v2:
-        --gdr                       (target db [default: gdr])
+        --gdr                       (specify the target db [default: gdr])
 
-        --configId <id>             (specify configuration by id)
-        --configName <name>         (specify configuration by name)
-        --runNumber <run>           (specify configuration by run)
+        --configId <id>             (specify the configuration by id)
+        --configName <name>         (specify the configuration by name)
+        --runNumber <run>           (specify the configuration by run number)
           [exactly one of --configId OR --configName OR --runNumber is required]
 
         --cff                       (retrieve configuration *fragment*)
@@ -142,13 +142,16 @@ def help():
         --sequences <s1[,s2]>       (include sequences, referenced or not!)
         --modules <p1[,p2]>         (include modules, referenced or not!)
         --blocks <m1::p1[,p2][,m2]> (generate parameter blocks)
+
+        --verbose                   (print additional details)
 """)
 
 
 def main():
     args = sys.argv[1:]
     version = None
-    db = None
+    db      = None
+    verbose = False
 
     if not args:
         help()
@@ -157,6 +160,10 @@ def main():
     if '--help' in args or '-h' in args:
         help()
         sys.exit(0)
+
+    if '--verbose' in args:
+        verbose = True
+        args.remove('--verbose')
 
     if '--v1' in args and '--v2' in args:
         sys.stderr.write( "ERROR: conflicting database version specifications \"--v1\" and \"--v2\"\n" )
@@ -204,7 +211,7 @@ def main():
         else:
             sys.stderr.write( "ERROR: unsupported database version \"%s\"\n" % version)
 
-    converter = OfflineConverter(version = version, database = db, verbose = False)
+    converter = OfflineConverter(version = version, database = db, verbose = verbose)
     out, err = converter.query( * args )
     if 'ERROR' in err:
         sys.stderr.write( "%s: error while retriving the HLT menu\n\n%s\n\n" % (sys.argv[0], err) )
