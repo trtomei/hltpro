@@ -9,20 +9,22 @@ import cx_Oracle
 
 class CmsswDB(object):
 
-    def __init__(self):
+    def __init__(self, database = None):
         self.command = os.path.basename(sys.argv[0])
-        self.config  = os.path.expanduser('~/.cmsswdb')
+        self.config  = os.path.expanduser('/nfshome0/hltpro/.cmsswdb')
         try:
             config = ConfigParser.SafeConfigParser()
             config.readfp(open(self.config))
             user     = config.get('cmsswdb', 'user')
             password = config.get('cmsswdb', 'password')
             dsn      = config.get('cmsswdb', 'dsn')
+            if database == 'INT2R':
+                dsn = config.get('cmsswdb', 'INT2Rdsn')
         except:
             print '%(command)s: error reading the configuration from %(config)s: %(error)s' % { 'command': self.command, 'config': self.config, 'error': str(sys.exc_value) }
             sys.exit(1)
         try:
-            self.connection = cx_Oracle.connect(user='CMS_HLT_GDR', password='convertimi!', dsn='CMS_OMDS_LB')
+            self.connection = cx_Oracle.connect(user, password, dsn)
         except cx_Oracle.DatabaseError as e:
             print '%(command)s: error connecting to database for writing: %s' % { 'command': self.command, 'error': str(e) }
             sys.exit(1)
@@ -141,6 +143,7 @@ def main():
     parser.add_option('-s', '--subsystem')
     parser.add_option('-a', '--architecture')
     parser.add_option('-h', '--help')
+    parser.add_option('-d', '--database')
     parser.set_usage(optparse.SUPPRESS_USAGE)   # suppress the default usage message
     (options, args) = parser.parse_args()
 
@@ -159,7 +162,7 @@ def main():
         print_help()
         sys.exit(2)
 
-    db = CmsswDB()
+    db = CmsswDB(options.database)
 
     action = args[0]
     if action not in actions:
