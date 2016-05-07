@@ -109,14 +109,24 @@ for row in reader:
     ps_str = "          %s" % (row[0])
     output_file_finor.write(ps_str)
 
-    if row[0] in '0':
+    if row[2] in '0':
+        print row[2]
         ps_str = ",%s" % ('0')
     else:
+        print row[2]
         ps_str = ",%s" % ('1')
         
     output_file_finor.write(ps_str+"\n")
     output_file_finor.write("        </row>\n")
     previous_bit = int(row[0])
+
+if previous_bit < 511:
+    for i in range(previous_bit,511):
+        output_file_finor.write("        <row>\n")
+        ps_str = ("          "+str(previous_bit+1)+",0\n")
+        output_file_finor.write(ps_str)
+        previous_bit+=1
+        output_file_finor.write("        </row>\n")
 
 input_file.close()
 
@@ -126,4 +136,4 @@ output_file_finor.write("  </context>\n")
 output_file_finor.write("</run-settings>\n")
 output_file_finor.close()
 
-print "\n converted csv file to l1 finor format: %s\n" % (output_file_name_finor)
+print "\n converted csv file to l1 format: %s\n" % (output_file_name_finor)
