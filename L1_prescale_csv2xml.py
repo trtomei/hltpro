@@ -61,8 +61,6 @@ for row in reader:
     output_file.write("        </row>\n")
     previous_bit = int(row[0])
 
-input_file.close()
-
 output_file.write("      </rows>\n")
 output_file.write("    </param>\n")
 output_file.write("  </context>\n")
@@ -78,10 +76,6 @@ print "\n converted csv file to l1 format: %s\n" % (output_file_name)
 ###########################################
 # FINOR MASK
 ###########################################
-
-input_file = open(sys.argv[1], 'rb')
-reader = csv.reader(input_file)
-
 
 output_file_name_finor = "l1_finor_mask.txt"
 output_file_finor = open(output_file_name_finor, "w")
