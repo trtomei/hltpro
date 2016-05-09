@@ -109,12 +109,8 @@ for row in reader:
     ps_str = "          %s" % (row[0])
     output_file_finor.write(ps_str)
 
-    if row[2] in '0':
-        print row[2]
-        ps_str = ",%s" % ('0')
-    else:
-        print row[2]
-        ps_str = ",%s" % ('1')
+    if row[2] in '0': ps_str = ",%s" % ('0')
+    else: ps_str = ",%s" % ('1')
         
     output_file_finor.write(ps_str+"\n")
     output_file_finor.write("        </row>\n")
