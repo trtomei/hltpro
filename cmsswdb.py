@@ -26,7 +26,7 @@ class CmsswDB(object):
         try:
             self.connection = cx_Oracle.connect(user, password, dsn)
         except cx_Oracle.DatabaseError as e:
-            print '%(command)s: error connecting to database for writing: %s' % { 'command': self.command, 'error': str(e) }
+            print '%(command)s: error connecting to database for writing: %(error)s' % { 'command': self.command, 'error': str(e) }
             sys.exit(1)
 
 

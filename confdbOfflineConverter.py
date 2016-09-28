@@ -9,9 +9,27 @@ import atexit
 
 class OfflineConverter:
 
+    # the machine aliases and interfaces for the *online* database are
+    #   cmsonr1-s.cms, cmsonr2-s.cms, cmsonr3-s.cms
+    #   cmsonr1-v.cms, cmsonr2-v.cms, cmsonr3-v.cms
+    # but the -s and -v interfaces resolve to the same hosts.
+    # The actual machines and interfaces are
+    #   CMSRAC11-S.cms, CMSRAC12-S.cms, CMSRAC21-S.cms
+    #   CMSRAC11-V.cms, CMSRAC12-V.cms, CMSRAC21-V.cms
+
+    # the possible machines and interfaces for the *offline* database are 
+    #   cmsr1-s.cms, cmsr2-s.cms, cmsr3-s.cms
+    #   cmsr1-v.cms, cmsr2-v.cms, cmsr3-v.cms
+    # but the -s and -v interfaces resolve to the same hosts
+    # The actual machines and interfaces are
+    #   itrac50011-s.cern.ch, itrac50063-s.cern.ch, itrac50078-s.cern.ch
+    #   itrac50011-v.cern.ch, itrac50063-v.cern.ch, itrac50078-v.cern.ch
+
     versions = {}
     versions['v1'] = ( 'ojdbc6.jar', 'cmssw-evf-confdb-converter.jar' )
-    versions['v2'] = ( 'ojdbc6.jar', 'cmssw-evf-confdb-converter-v2.jar' )
+    #versions['v2'] = ( 'ojdbc6.jar', 'cmssw-evf-confdb-converter-v02-01-02.jar' )
+    #versions['v2'] = ( 'ojdbc6.jar', 'cmssw-evf-confdb-converter-v02-02-04.jar' )
+    versions['v2'] = ( 'ojdbc6.jar', 'cmssw-evf-confdb-converter.jar' )
 
     databases = {}
     databases['v1'] = {}
@@ -36,7 +54,8 @@ class OfflineConverter:
         self.verbose = verbose
         self.version = version
         self.baseDir = '/afs/cern.ch/user/c/confdb/www/lib'
-        self.baseUrl = 'http://confdb.web.cern.ch/confdb/lib'
+        #self.baseUrl = 'http://confdb.web.cern.ch/confdb/lib'
+        self.baseUrl = 'http://confdb.web.cern.ch/confdb/'+version+'/lib'
         self.workDir = ''
 
         # check the schema version
@@ -177,7 +196,7 @@ def main():
         version = 'v2'
         args.remove('--v2')
 
-    if sum(('--hltdev' in args,'--orcoff' in args, '--daq' in args, '--gdr' in args)) > 1:
+    if sum(('--hltdev' in args, '--orcoff' in args, '--daq' in args, '--gdr' in args)) > 1:
         sys.stderr.write( "ERROR: too many database specifications: \"--hltdev\", \"--orcoff\", \"--daq\", \"--gdr\"\n" )
         sys.exit(1)
 
@@ -192,6 +211,10 @@ def main():
     if '--orcoff' in args:
         db = 'orcoff'
         args.remove('--orcoff')
+
+    if '--daq' in args:
+        db = 'daq'
+        args.remove('--daq')
 
     if '--gdr' in args:
         db = 'gdr'

@@ -22,18 +22,18 @@ count=0
 for line in $menulines ; do
     #echo $line
     if [[ $line == L1* ]]; then
-	chk=0
-	for seed in $xmllines ; do
+        chk=0
+        for seed in $xmllines ; do
             #echo "   $seed"
             if [ $line == $seed ]; then
-		chk=1
-		break
+                chk=1
+                break
             fi
-	    done
-	if [ $chk -eq 0 ]; then
+        done
+        if [ $chk -eq 0 ]; then
             echo "$line does not exist in L1 xml!!!"
             ((count++))
-	    fi
+        fi
     fi
 done
 echo "Found $count instances in $menu of an L1 seed which is not present in $xml"

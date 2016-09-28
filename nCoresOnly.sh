@@ -1,7 +1,7 @@
 #!/bin/bash
 
 nTot=`grep -c processor /proc/cpuinfo`
-n=$(( $nTot/2 ))
+n=$nTot
 
 #Second statement is a requirement that the argument be a positive integer
 if [[ $# -eq 1 && $1 =~ [0-9]+$ ]]; then

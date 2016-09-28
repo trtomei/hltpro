@@ -18,25 +18,9 @@ fi
 
 menu=$1
 
-echo "dumping $menu from ConfDB v1..."
-/nfshome0/hltpro/scripts/hltConfigFromDB --v1 --daq --configName $menu > confdb_v1.py
 echo "dumping $menu from ConfDB v2..."
-/nfshome0/hltpro/scripts/hltConfigFromDB --v2 --gdr --configName $menu > confdb_v2.py
+/nfshome0/hltpro/scripts/hltConfigFromDB --v2 --gdr --configName $menu > hlt.py
 
-# check that v1 and v2 databases give the same HLT menu
-echo "comparing dumps"
-if
-    # use -B to ignore blank lines
-    # do not use -b/-w for python files
-    diff -q -B confdb_v1.py confdb_v2.py > /dev/null
-then
-    mv confdb_v2.py hlt.py
-    rm confdb_v1.py
-else
-    echo "Error: $menu is different between ConfDB v1 and v2"
-    diff -u -B confdb_v1.py confdb_v2.py
-    exit 1
-fi
 
 # check for errors in the menu
 echo "checking dump consistency, found HLT version:"
@@ -55,8 +39,15 @@ rm -f hlt.py hltConverted.py
 echo "running MenuChecker.py"
 python /nfshome0/hltpro/RateMon/MenuChecker.py $menu
 
+gtag=`grep "globaltag" /opt/hltd/python/HiltonMenu.py | sed 's/.*"\(.*\)".*$/\1/g'`
+echo "checking L1 seeds in HLT menu against L1 xml in global tag $gtag"
+bash /nfshome0/hltpro/scripts/L1MenuCheck_FromGT.sh /opt/hltd/python/HiltonMenu.py $gtag
+#I have to suppress the error output otherwise we get flooded with permissions errors from the release install.
+#Unfortunately this makes debugging difficult in case things go wrong (and they will with this script).
+
 echo "HLTD config:"
 cat /etc/hltd.conf | grep test_hlt_config1
+cat /etc/hltd.conf | grep cmssw_default_version
 echo "heading of /opt/hltd/python/HiltonMenu.py:"
 head -1 /opt/hltd/python/HiltonMenu.py
 
