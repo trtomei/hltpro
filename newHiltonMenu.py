@@ -39,6 +39,13 @@ def l1gt_override(tagname):
     l1gt_str+=")\n"
     return l1gt_str
 
+def gt_override(tagname):
+    """ Returns a string of the python necessary to override the GT."""
+    gt_str="process.GlobalTag.globaltag = '%s'\n" % tagname
+    gt_str+="\n"
+    return gt_str
+
+
 def main(args):
 
     if os.getenv("CMSSW_VERSION") == None:
@@ -85,6 +92,9 @@ def main(args):
 
     with open("/nfshome0/hltpro/scripts/hilton_menu_overrides.txt") as f:
         menu_overrides = f.read()
+    if args.GT!=None:
+        print "   overriding GT for hilton config with GT:",args.GT
+        menu_overrides += gt_override(args.GT)
     if args.l1XML!=None:
         print "   overriding L1 menu for hilton config with xml:",args.l1XML
         menu_overrides += l1xml_override(args.l1XML)
@@ -94,7 +104,7 @@ def main(args):
         subprocess.Popen(["/nfshome0/hltpro/scripts/L1MenuCheck.sh","hlt.py",args.l1XML]).communicate()
 
     if args.l1GT!=None:
-        print "   overriding L1 menu for hilton config with gt record:",args.l1GT
+        print "   overriding L1 menu for hilton config with GT record:",args.l1GT
         menu_overrides += l1gt_override(args.l1GT)
 
     with open("hlt.py","a") as f:
@@ -116,6 +126,7 @@ def main(args):
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='takes a HLT menu in ORCOFF and changes the menu on the Hilton')
     parser.add_argument('menu',help='HLT menu location in ORCOFF')
+    parser.add_argument('--GT',help='overrides the Global Tag in the resulting hilton menu with this GT')
     parser.add_argument('--l1XML',help='overrides the L1 menu in the resulting hilton menu via an XML file ')
     parser.add_argument('--l1GT',help='override the L1 menu in the resulting hilton menu via a GlobalTag record, example would be "--l1GT L1Menu_Collisions2016_v6r8m_m2" ask your friendly L1 menu expert for the correct record name')
     args = parser.parse_args()

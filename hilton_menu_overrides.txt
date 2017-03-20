@@ -1,0 +1,61 @@
+import FWCore.ParameterSet.VarParsing as VarParsing
+import os
+
+cmsswbase = os.path.expandvars('$CMSSW_BASE/')
+
+options = VarParsing.VarParsing ('analysis')
+
+options.register ('runNumber',
+                  1, # default value
+                  VarParsing.VarParsing.multiplicity.singleton,
+                  VarParsing.VarParsing.varType.int,          # string, int, or float
+                  "Run Number")
+
+options.register ('buBaseDir',
+                  '/fff/BU0', # default value
+                  VarParsing.VarParsing.multiplicity.singleton,
+                  VarParsing.VarParsing.varType.string,          # string, int, or float
+                  "BU base directory")
+
+options.register ('dataDir',
+                  '/fff/data', # default value
+                  VarParsing.VarParsing.multiplicity.singleton,
+                  VarParsing.VarParsing.varType.string,          # string, int, or float
+                  "FU data directory")
+
+options.register ('numThreads',
+                  1, # default value
+                  VarParsing.VarParsing.multiplicity.singleton,
+                  VarParsing.VarParsing.varType.int,          # string, int, or float
+                  "Number of CMSSW threads")
+
+options.register ('numFwkStreams',
+                  1, # default value
+                  VarParsing.VarParsing.multiplicity.singleton,
+                  VarParsing.VarParsing.varType.int,          # string, int, or float
+                  "Number of CMSSW streams")
+
+options.register ('transferMode',
+                  '', # default value 
+                  VarParsing.VarParsing.multiplicity.singleton,
+                  VarParsing.VarParsing.varType.string,          # string, int, or float
+                  "Selected transfer mode propagated by RCMS")
+
+options.parseArguments()
+
+process.options = cms.untracked.PSet(
+    numberOfThreads = cms.untracked.uint32(options.numThreads),
+    numberOfStreams = cms.untracked.uint32(options.numFwkStreams),
+    multiProcesses = cms.untracked.PSet(
+    maxChildProcesses = cms.untracked.int32(0)
+    )
+)
+
+process.EvFDaqDirector.buBaseDir    = options.buBaseDir
+process.EvFDaqDirector.baseDir      = options.dataDir
+process.EvFDaqDirector.runNumber    = options.runNumber
+
+try:
+     process.EvFDaqDirector.selectedTransferMode = options.transferMode
+except:
+     print "unable to set process.EvFDaqDirector.selectedTransferMode=",options.transferMode
