@@ -1,4 +1,4 @@
-### L1_prescale_xml2csv.py
+### updateL1seeds.py
 # Author: Silvio Donato
 # Ported fromS STORM to FOG by Thiago R. F. P. Tomei
 # Date: 2018-05-20
