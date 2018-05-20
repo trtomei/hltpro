@@ -12,7 +12,7 @@
 # 3) run the script
 # 4) you will have a newL1seeds.py file containing a fake path with the updated L1 filter modules
 # 5) load it in ConfDB from Configuration->Open Python File
-# 6) save your CondDB area
+# 6) save your ConfDB area
 # 7) deep import the new update modules in your HLT menu on ConfDB
 # 8) Remove the fake path from the HLT menu
 
