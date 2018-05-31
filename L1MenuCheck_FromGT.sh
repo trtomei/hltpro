@@ -63,6 +63,9 @@ count=0
 
 for line in $menulines ; do
     #echo $line
+    # Remove spurious symbols from L1 seed names, like parenthesis
+    correctedLine="$(echo $line | sed 's/)//g' | sed 's/(//g')"
+    line="$correctedLine"
     if [[ $line == L1* ]]; then
         chk=0
         for seed in $xmllines ; do
